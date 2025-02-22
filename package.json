@@ -1,0 +1,29 @@
+{
+  "name": "no-code-app-builder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "next": "^15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SlidersAI/no-code-app-builder.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SlidersAI/no-code-app-builder/issues"
+  },
+  "homepage": "https://github.com/SlidersAI/no-code-app-builder#readme",
+  "description": ""
+}
+
