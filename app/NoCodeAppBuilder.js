@@ -1,28 +1,24 @@
 "use client";
-
 import React, { useState } from "react";
 
 export default function NoCodeAppBuilder() {
-  const [components, setComponents] = useState([]);
   const [aiSuggestion, setAiSuggestion] = useState("");
+  const [components, setComponents] = useState([]);
 
-  // Add a new component to the canvas
+  // Add simple components to the "canvas"
   const addComponent = (type) => {
     setComponents([...components, { type, id: Date.now() }]);
   };
 
-  // AI Suggestion button handler
+  // Calls our GPT-4 route
   const handleAISuggestion = async () => {
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" }, // Important for JSON
-        body: JSON.stringify({ prompt: "Suggest UI components for an app" }),
+        body: JSON.stringify({ prompt: "Suggest some UI components" }),
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch AI suggestion");
-      }
+      if (!response.ok) throw new Error("Failed to fetch AI suggestion");
 
       const data = await response.json();
       setAiSuggestion(data.suggestion);
@@ -37,8 +33,8 @@ export default function NoCodeAppBuilder() {
       <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>
         AI-Powered No-Code App Builder
       </h1>
+      {/* Buttons for adding components + AI Suggestion */}
       <div style={{ marginTop: "16px" }}>
-        {/* Button group */}
         <button onClick={() => addComponent("button")}>Add Button</button>
         <button onClick={() => addComponent("input")} style={{ marginLeft: "8px" }}>
           Add Input
@@ -51,7 +47,7 @@ export default function NoCodeAppBuilder() {
         </button>
       </div>
 
-      {/* AI Suggestion box */}
+      {/* Shows the AI suggestion text, if any */}
       {aiSuggestion && (
         <div
           style={{
@@ -64,7 +60,7 @@ export default function NoCodeAppBuilder() {
         </div>
       )}
 
-      {/* Canvas for added components */}
+      {/* Canvas area for user-added components */}
       <div
         style={{
           border: "1px solid #ccc",
@@ -77,9 +73,7 @@ export default function NoCodeAppBuilder() {
           <div key={comp.id} style={{ marginBottom: "8px" }}>
             {comp.type === "button" && <button>Click Me</button>}
             {comp.type === "input" && <input placeholder="Enter text..." />}
-            {comp.type === "textarea" && (
-              <textarea placeholder="Write something..." rows={3} />
-            )}
+            {comp.type === "textarea" && <textarea placeholder="Write something..." rows={3} />}
           </div>
         ))}
       </div>
