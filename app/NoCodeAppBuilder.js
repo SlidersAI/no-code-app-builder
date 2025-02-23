@@ -1,64 +1,88 @@
 "use client";
+
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 export default function NoCodeAppBuilder() {
   const [components, setComponents] = useState([]);
   const [aiSuggestion, setAiSuggestion] = useState("");
 
+  // Add a new component to the canvas
   const addComponent = (type) => {
     setComponents([...components, { type, id: Date.now() }]);
   };
 
+  // AI Suggestion button handler
   const handleAISuggestion = async () => {
-  try {
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }, // ✅ Missing Header
-      body: JSON.stringify({ prompt: "Suggest UI components for an app" }),
-    });
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }, // Important for JSON
+        body: JSON.stringify({ prompt: "Suggest UI components for an app" }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch AI suggestion");
+      if (!response.ok) {
+        throw new Error("Failed to fetch AI suggestion");
+      }
+
+      const data = await response.json();
+      setAiSuggestion(data.suggestion);
+    } catch (error) {
+      console.error("Error fetching AI suggestion:", error);
+      setAiSuggestion("AI Suggestion failed. Check API setup.");
     }
-
-    const data = await response.json();
-    setAiSuggestion(data.suggestion);
-  } catch (error) {
-    console.error("Error fetching AI suggestion:", error);
-    setAiSuggestion("AI Suggestion failed. Check API setup.");
-  }
-};
+  };
 
   return (
-    <div className="p-6 space-y-4">
-      <h1 className="text-xl font-bold">AI-Powered No-Code App Builder</h1>
-      <div className="flex space-x-2">
-        <Button onClick={() => addComponent("button")}>Add Button</Button>
-        <Button onClick={() => addComponent("input")}>Add Input</Button>
-        <Button onClick={() => addComponent("textarea")}>Add Textarea</Button>
-        <Button onClick={handleAISuggestion}>AI Suggest Component</Button>
+    <div style={{ padding: "24px" }}>
+      <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>
+        AI-Powered No-Code App Builder
+      </h1>
+      <div style={{ marginTop: "16px" }}>
+        {/* Button group */}
+        <button onClick={() => addComponent("button")}>Add Button</button>
+        <button onClick={() => addComponent("input")} style={{ marginLeft: "8px" }}>
+          Add Input
+        </button>
+        <button onClick={() => addComponent("textarea")} style={{ marginLeft: "8px" }}>
+          Add Textarea
+        </button>
+        <button onClick={handleAISuggestion} style={{ marginLeft: "8px" }}>
+          AI Suggest Component
+        </button>
       </div>
 
+      {/* AI Suggestion box */}
       {aiSuggestion && (
-        <Card className="mt-4">
-          <CardContent>{aiSuggestion}</CardContent>
-        </Card>
+        <div
+          style={{
+            border: "1px solid #ccc",
+            marginTop: "16px",
+            padding: "8px",
+          }}
+        >
+          {aiSuggestion}
+        </div>
       )}
 
-      <div className="border p-4 mt-4 min-h-[200px]">
+      {/* Canvas for added components */}
+      <div
+        style={{
+          border: "1px solid #ccc",
+          marginTop: "16px",
+          minHeight: "200px",
+          padding: "8px",
+        }}
+      >
         {components.map((comp) => (
-          <div key={comp.id} className="p-2">
-            {comp.type === "button" && <Button>Click Me</Button>}
-            {comp.type === "input" && <Input placeholder="Enter text..." />}
-            {comp.type === "textarea" && <Textarea placeholder="Write something..." />}
+          <div key={comp.id} style={{ marginBottom: "8px" }}>
+            {comp.type === "button" && <button>Click Me</button>}
+            {comp.type === "input" && <input placeholder="Enter text..." />}
+            {comp.type === "textarea" && (
+              <textarea placeholder="Write something..." rows={3} />
+            )}
           </div>
         ))}
       </div>
     </div>
   );
 }
-
